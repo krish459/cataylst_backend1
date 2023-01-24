@@ -1,4 +1,10 @@
-const { userRegister, userLogin } = require("../utils/Auth");
+const {
+  userRegister,
+  userLogin,
+  userAuth,
+  serializeUser,
+  checkRole,
+} = require("../utils/Auth");
 
 const router = require("express").Router();
 
@@ -43,18 +49,40 @@ router.post("/login-broker", async (req, res) => {
 });
 
 // profile route
-router.get("profile", async (req, res) => {});
+router.get("/profile", userAuth, async (req, res) => {
+  return res.json(serializeUser(req.user));
+});
 
 // customer Protected route
-router.post("/customer-protected", async (req, res) => {});
+router.get(
+  "/customer-protected",
+  userAuth,
+  checkRole(["customer"]),
+  async (req, res) => {}
+);
 
 // admin Protected route
-router.post("/admin-protected", async (req, res) => {});
+router.get(
+  "/admin-protected",
+  userAuth,
+  checkRole(["admin"]),
+  async (req, res) => {}
+);
 
 // Owner Protected route
-router.post("/owner-protected", async (req, res) => {});
+router.get(
+  "/owner-protected",
+  userAuth,
+  checkRole(["owner"]),
+  async (req, res) => {}
+);
 
 // broker Protected route
-router.post("/broker-protected", async (req, res) => {});
+router.get(
+  "/broker-protected",
+  userAuth,
+  checkRole(["broker"]),
+  async (req, res) => {}
+);
 
 module.exports = router;
