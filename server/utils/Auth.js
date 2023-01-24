@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { SECRET } = require("../config");
 
 // Desc to register the user (customer,admin,broker,owner)
 
@@ -43,6 +45,56 @@ const userRegister = async (userDets, role, res) => {
   }
 };
 
+const userLogin = async (userCreds, role, res) => {
+  let { username, password } = userCreds;
+  // first check if username is in the database
+  const user = await User.findOne({ username });
+  if (!user) {
+    return res.status(404).json({
+      message: `Username is not found. Invalid login credentials`,
+      success: false,
+    });
+  }
+  if (user.role != role) {
+    return res.status(403).json({
+      message: `Please make sure you are loggging in from right portal`,
+      success: false,
+    });
+  }
+  let isMatch = await bcrypt.compare(password, user.password);
+  if (isMatch) {
+    // issue the token
+    let token = jwt.sign(
+      {
+        user_id: user._id,
+        role: user.role,
+        username: user.username,
+        email: user.email,
+      },
+      SECRET,
+      { expiresIn: "7 days" }
+    );
+
+    let result = {
+      username: user.username,
+      role: user.role,
+      email: user.email,
+      token: `Bearer ${token}`,
+      expiresIn: 168,
+    };
+    return res.status(200).json({
+      ...result,
+      message: `User is successfully Logged in`,
+      success: true,
+    });
+  } else {
+    return res.status(403).json({
+      message: `Incorrect Password`,
+      success: false,
+    });
+  }
+};
+
 const validateUsername = async (username) => {
   let user = await User.findOne({ username });
   return user ? false : true;
@@ -54,4 +106,5 @@ const validateEmail = async (email) => {
 
 module.exports = {
   userRegister,
+  userLogin,
 };

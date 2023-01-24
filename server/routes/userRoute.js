@@ -1,4 +1,4 @@
-const { userRegister } = require("../utils/Auth");
+const { userRegister, userLogin } = require("../utils/Auth");
 
 const router = require("express").Router();
 
@@ -23,16 +23,24 @@ router.post("/register-broker", async (req, res) => {
 });
 
 // customer Login route
-router.post("/login-customer", async (req, res) => {});
+router.post("/login-customer", async (req, res) => {
+  await userLogin(req.body, "customer", res);
+});
 
 // admin Login route
-router.post("/login-admin", async (req, res) => {});
+router.post("/login-admin", async (req, res) => {
+  await userLogin(req.body, "admin", res);
+});
 
 // Owner Login route
-router.post("/login-owner", async (req, res) => {});
+router.post("/login-owner", async (req, res) => {
+  await userLogin(req.body, "owner", res);
+});
 
 // broker Login route
-router.post("/login-broker", async (req, res) => {});
+router.post("/login-broker", async (req, res) => {
+  await userLogin(req.body, "broker", res);
+});
 
 // profile route
 router.get("profile", async (req, res) => {});
