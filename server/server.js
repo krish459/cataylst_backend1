@@ -17,6 +17,7 @@ require("./middlewares/passport")(passport);
 
 // user router middleware
 app.use("/api/users", require("./routes/userRoute"));
+app.use("/api/property", require("./routes/propertyRoutes"));
 
 app.get("/", (req, res) => {
   res.send("Server working branding ");

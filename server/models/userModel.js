@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const { ROLES } = require("../utils/Enum");
 
 const UserSchema = new Schema(
   {
@@ -12,8 +13,8 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      default: "customer",
-      enum: ["customer", "admin", "broker", "owner"],
+      default: ROLES.CUSTOMER,
+      enum: [ROLES.CUSTOMER, ROLES.ADMIN, ROLES.BROKER, ROLES.CUSTOMER],
     },
     username: {
       type: String,
@@ -27,4 +28,4 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model("users", UserSchema);
+module.exports = model("user", UserSchema);

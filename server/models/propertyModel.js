@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-let propertyModel = new Schema(
+let propertySchema = new Schema(
   {
     title: {
       type: String,
@@ -14,10 +14,10 @@ let propertyModel = new Schema(
     },
     images: {
       type: String,
-      required: true,
+      //   required: true,
     },
     area: {
-      type: String,
+      type: Number,
       required: true,
     },
     locality: {
@@ -58,18 +58,16 @@ let propertyModel = new Schema(
         type: String,
       },
     ],
-    person: [
-      {
-        name: String,
-        email: String,
-      },
-    ],
+    flatOwner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const model = mongoose.model("properties", propertyModel);
+mongoose.models = {};
 
-module.exports = model;
+module.exports = mongoose.model("Property", propertySchema);
