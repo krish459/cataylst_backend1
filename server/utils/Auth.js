@@ -6,7 +6,7 @@ const passport = require("passport");
 
 // Desc to register the user (customer,admin,broker,owner)
 
-const userRegister = async (userDets, role, res) => {
+const userRegister = async (userDets, res) => {
   try {
     // validate the user
     let usernameNotTaken = await validateUsername(userDets.username);
@@ -30,7 +30,6 @@ const userRegister = async (userDets, role, res) => {
     const newUser = new User({
       ...userDets,
       password: hashedPassword,
-      role: role,
     });
 
     await newUser.save();
@@ -131,10 +130,24 @@ const serializeUser = (user) => {
   };
 };
 
+// const authByRole = (allowedRole) => {
+//   return function (req, res, next) {
+//     if (allowedRole == req.body.role) {
+//       next();
+//     } else {
+//       return res.status(400).json({
+//         message: `Access Denied`,
+//         success: false,
+//       });
+//     }
+//   };
+// };
+
 module.exports = {
   userRegister,
   userLogin,
   userAuth,
   serializeUser,
   checkRole,
+  //   authByRole,
 };
