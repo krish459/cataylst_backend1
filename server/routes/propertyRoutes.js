@@ -57,7 +57,7 @@ router.get("/get-properties/:id", async (req, res, next) => {
   try {
     const product = await Property.findById(id);
     // const product = await Property.findOne({ _id: id });
-    res.send(product);
+    res.status(200).json({ product });
   } catch (error) {
     return res.status(400).json({ message: error });
   }
