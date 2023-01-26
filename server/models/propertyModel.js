@@ -32,18 +32,20 @@ let propertySchema = new Schema(
       type: Number,
       required: true,
     },
+    buyOrRent: {
+      type: String,
+      required: true,
+    },
     details: [
       {
         bedrooms: Number,
         bathroom: Number,
-        listingType: String,
         propertyType: String,
         propertyAge: Number,
         furnishing: String,
         tenants: Number,
-        deposit: String,
+        deposit: Number,
         foodPreferance: String,
-        builtUpArea: Number,
         balcony: Number,
         flatFloor: Number,
         totalFloors: Number,
