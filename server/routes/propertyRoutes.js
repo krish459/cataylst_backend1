@@ -77,7 +77,12 @@ router.get(
                 parseInt(req.query.waterSupply)
               : element.details[0].waterSupply ==
                 parseInt(req.query.waterSupply)) ||
-            element.amenities.includes(req.query.amenities)
+            element.amenities.includes(req.query.amenities) ||
+            (parseInt(req.query.availableFromYear) >= 2026
+              ? element.details[0].availableFrom.getFullYear().toString() >=
+                parseInt(req.query.availableFromYear)
+              : element.details[0].availableFrom.getFullYear().toString() ==
+                parseInt(req.query.availableFromYear))
           ) {
             details.push(element);
           }
