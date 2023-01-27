@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../config");
 const passport = require("passport");
+const { z, ZodError } = require("zod");
+const { ROLES } = require("../utils/Enum");
 
 // Desc to register the user (customer,admin,broker,owner)
 
@@ -32,11 +34,16 @@ const userRegister = async (userDets, res) => {
       password: hashedPassword,
     });
 
-    await newUser.save();
-    return res.status(201).json({
-      message: `User is successfully registered`,
-      success: true,
-    });
+    const result1 = await saveData(userDets);
+    if (result1.success) {
+      await newUser.save();
+      return res.status(201).json({
+        message: `User is successfully registered`,
+        success: true,
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid Input" });
+    }
   } catch (error) {
     return res.status(500).json({
       message: `Unable to create your account`,
@@ -142,6 +149,27 @@ const serializeUser = (user) => {
 //     }
 //   };
 // };
+const checkDataUser = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  username: z.string(),
+  password: z.string(),
+  // role: z.enum([ROLES.CUSTOMER, ROLES.ADMIN, ROLES.BROKER, ROLES.CUSTOMER]),
+});
+
+async function saveData(rawData) {
+  try {
+    const data1 = checkDataUser.parse(rawData);
+    console.log(data1);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, error: error.flatten() };
+    } else {
+      console.log(error);
+    }
+  }
+  return { success: true, errors: null };
+}
 
 module.exports = {
   userRegister,

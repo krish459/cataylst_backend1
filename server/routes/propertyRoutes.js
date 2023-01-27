@@ -3,6 +3,11 @@ const Property = require("../models/propertyModel");
 const express = require("express");
 const router = express.Router();
 
+const { z, ZodError } = require("zod");
+
+// const multer = require("multer");
+// const upload = multer({ dest: "uploads/" });
+
 router.get(
   "/get-properties",
   // userAuth,
@@ -126,9 +131,15 @@ router.post("/add-properties", async (req, res) => {
     flatOwner,
   });
   try {
-    newItem.save();
-    res.send(`Item added successfully : ${newItem}`);
+    const result = await saveData(req.body);
+    if (result.success) {
+      newItem.save();
+      res.send(`Item added successfully : ${newItem}`);
+    } else {
+      return res.status(400).json({ message: "Invalid Input" });
+    }
   } catch (error) {
+    // return res.status(200).json({ result });
     return res.status(400).json({ message: error });
   }
 });
@@ -143,5 +154,50 @@ router.get("/get-properties/:id", async (req, res, next) => {
     return res.status(400).json({ message: error });
   }
 });
+
+const details1 = z.object({
+  bedrooms: z.number(),
+  bathroom: z.number(),
+  propertyType: z.string(),
+  propertyAge: z.number().positive(),
+  furnishing: z.enum(["full", "partially", "not"]),
+  tenants: z.number().positive(),
+  deposit: z.number().positive(),
+  foodPreferance: z.string(),
+  balcony: z.number(),
+  flatFloor: z.number(),
+  totalFloors: z.number().positive(),
+  availableFrom: z.string(),
+  facing: z.string(),
+  monthlymaintenance: z.number().positive(),
+  waterSupply: z.number().positive(),
+});
+const User1 = z.object({
+  title: z.string(),
+  description: z.string(),
+  // images:z.string().url(),
+  images: z.string(),
+  area: z.number().positive(),
+  locality: z.string(),
+  state: z.string(),
+  rent: z.number().positive(),
+  buyOrRent: z.enum(["buy", "rent"]),
+  details: z.array(details1),
+  flatOwner: z.string(),
+});
+
+async function saveData(rawData) {
+  try {
+    const data1 = User1.parse(rawData);
+    // console.log(data1);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, error: error.flatten() };
+    } else {
+      console.log(error);
+    }
+  }
+  return { success: true, errors: null };
+}
 
 module.exports = router;
