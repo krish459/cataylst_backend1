@@ -5,6 +5,7 @@ const { SECRET } = require("../config");
 const passport = require("passport");
 const { z, ZodError } = require("zod");
 const { ROLES } = require("../utils/Enum");
+const { saveData } = require("./Zodcheck");
 
 // Desc to register the user (customer,admin,broker,owner)
 
@@ -34,7 +35,7 @@ const userRegister = async (userDets, res) => {
       password: hashedPassword,
     });
 
-    const result1 = await saveData(userDets);
+    const result1 = await saveData(checkDataUser, userDets);
     if (result1.success) {
       await newUser.save();
       return res.status(201).json({
@@ -51,6 +52,13 @@ const userRegister = async (userDets, res) => {
     });
   }
 };
+const checkDataUser = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  username: z.string(),
+  password: z.string(),
+  // role: z.enum([ROLES.CUSTOMER, ROLES.ADMIN, ROLES.BROKER, ROLES.CUSTOMER]),
+});
 
 const userLogin = async (userCreds, role, res) => {
   let { username, password } = userCreds;
@@ -149,27 +157,6 @@ const serializeUser = (user) => {
 //     }
 //   };
 // };
-const checkDataUser = z.object({
-  name: z.string(),
-  email: z.string().email(),
-  username: z.string(),
-  password: z.string(),
-  // role: z.enum([ROLES.CUSTOMER, ROLES.ADMIN, ROLES.BROKER, ROLES.CUSTOMER]),
-});
-
-async function saveData(rawData) {
-  try {
-    const data1 = checkDataUser.parse(rawData);
-    console.log(data1);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, error: error.flatten() };
-    } else {
-      console.log(error);
-    }
-  }
-  return { success: true, errors: null };
-}
 
 module.exports = {
   userRegister,

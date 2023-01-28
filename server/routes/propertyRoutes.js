@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 
 const { z, ZodError } = require("zod");
+const { saveData } = require("../utils/Zodcheck");
 
 // const multer = require("multer");
 // const upload = multer({ dest: "uploads/" });
@@ -131,7 +132,7 @@ router.post("/add-properties", async (req, res) => {
     flatOwner,
   });
   try {
-    const result = await saveData(req.body);
+    const result = await saveData(User1, req.body);
     if (result.success) {
       newItem.save();
       res.send(`Item added successfully : ${newItem}`);
@@ -185,19 +186,5 @@ const User1 = z.object({
   details: z.array(details1),
   flatOwner: z.string(),
 });
-
-async function saveData(rawData) {
-  try {
-    const data1 = User1.parse(rawData);
-    // console.log(data1);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, error: error.flatten() };
-    } else {
-      console.log(error);
-    }
-  }
-  return { success: true, errors: null };
-}
 
 module.exports = router;
