@@ -5,7 +5,6 @@ const bp = require("body-parser");
 const db = require("./db");
 const app = express();
 const passport = require("passport");
-
 const port = process.env.PORT || 8000;
 
 app.use(express.json());

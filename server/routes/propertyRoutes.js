@@ -150,6 +150,18 @@ router.get("/get-properties/:id", async (req, res, next) => {
   try {
     const product = await Property.findById(id);
     // const product = await Property.findOne({ _id: id });
+
+    res.status(200).json({ product });
+  } catch (error) {
+    return res.status(400).json({ message: error });
+  }
+});
+router.get("/:shortUrl", async (req, res) => {
+  // console.log(req.params.shortUrl);
+  try {
+    const product = await Property.findOne({ short: req.params.shortUrl });
+    console.log(product);
+
     res.status(200).json({ product });
   } catch (error) {
     return res.status(400).json({ message: error });

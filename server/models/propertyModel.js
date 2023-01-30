@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const shortId = require("shortid");
 
 const Schema = mongoose.Schema;
 
@@ -63,6 +64,11 @@ let propertySchema = new Schema(
     flatOwner: {
       type: Schema.Types.ObjectId,
       ref: "user",
+    },
+    short: {
+      type: String,
+      required: true,
+      default: shortId.generate,
     },
   },
   {
