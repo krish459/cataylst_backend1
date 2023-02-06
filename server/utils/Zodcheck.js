@@ -5,6 +5,7 @@ async function saveData(DataUser, rawData) {
     const data1 = DataUser.parse(rawData);
     console.log(data1);
   } catch (error) {
+    // console.log(error);
     if (error instanceof ZodError) {
       return { success: false, error: error.flatten() };
     } else {

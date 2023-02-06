@@ -38,6 +38,7 @@ let propertySchema = new Schema(
       required: true,
     },
     details: [
+  
       {
         bedrooms: Number,
         bathroom: Number,

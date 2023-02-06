@@ -6,8 +6,39 @@ const router = express.Router();
 const { z, ZodError } = require("zod");
 const { saveData } = require("../utils/Zodcheck");
 
-// const multer = require("multer");
-// const upload = multer({ dest: "uploads/" });
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+
+const { uploadFile, getFileStream, generateUploadURL } = require("../s3");
+
+// generates signed url
+router.get('/s3Url', async(req,res)=>{
+  const url = await generateUploadURL()
+  res.send({url})
+})
+
+// code in frontend to directly store the image
+//   const {url} = await fetch('').then(res=>res.json())
+//   console.log(url)
+//   await fetch(url,{
+//     method: "PUT",
+//     headers:{
+//       "Content_Type":"multipart/form-data"
+//     },
+//     body: file
+//   })
+// })
+// const imageUrl = url.split('?')[0]
+// console.log(imageUrl)
+
+
+// to get images from the backend
+// router.get("/images/:key", (req, res) => {
+//   const key = req.params.key;
+//   const readStream = getFileStream(key);
+
+//   readStream.pipe(res);
+// });
 
 router.get(
   "/get-properties",
@@ -103,7 +134,7 @@ router.get(
   }
 );
 
-router.post("/add-properties", async (req, res) => {
+router.post("/add-properties", upload.single("images"), async (req, res) => {
   const {
     title,
     description,
@@ -117,7 +148,10 @@ router.post("/add-properties", async (req, res) => {
     amenities,
     flatOwner,
   } = req.body;
-
+  // const file = req.file;
+  // console.log(file);
+  // const resultImage = await uploadFile(file);
+  // console.log(resultImage.Key);
   const newItem = new Property({
     title,
     description,
@@ -160,7 +194,7 @@ router.get("/:shortUrl", async (req, res) => {
   // console.log(req.params.shortUrl);
   try {
     const product = await Property.findOne({ short: req.params.shortUrl });
-    console.log(product);
+    // console.log(product);
 
     res.status(200).json({ product });
   } catch (error) {
@@ -168,6 +202,8 @@ router.get("/:shortUrl", async (req, res) => {
   }
 });
 
+
+// changing string to number
 const details1 = z.object({
   bedrooms: z.number(),
   bathroom: z.number(),
@@ -189,7 +225,7 @@ const User1 = z.object({
   title: z.string(),
   description: z.string(),
   // images:z.string().url(),
-  images: z.string(),
+  // images: z.string(),
   area: z.number().positive(),
   locality: z.string(),
   state: z.string(),
