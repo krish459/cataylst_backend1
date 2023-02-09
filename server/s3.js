@@ -8,10 +8,11 @@ const shortId = require("shortid");
 const { log } = require("console");
 
 const s3 = new S3({
-  REGION,
+  // REGION,
+  region: 'ap-south-1',
   ACCESS_KEY,
   SECRET_KEY,
-  signatureVersion: "v4",
+  signatureVersion: 'v4'
 });
 
 // generate signed url
@@ -22,7 +23,7 @@ async function generateUploadURL() {
   const params = {
     Bucket: BUCKET_NAME,
     Key: imageName,
-    Expires: 60,
+    Expires: 600,
   };
 
   const uploadURL = await s3.getSignedUrlPromise("putObject", params);
