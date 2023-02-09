@@ -12,10 +12,10 @@ const upload = multer({ dest: "uploads/" });
 const { uploadFile, getFileStream, generateUploadURL } = require("../s3");
 
 // generates signed url
-router.get('/s3Url', async(req,res)=>{
-  const url = await generateUploadURL()
-  res.send({url})
-})
+router.get("/s3Url", async (req, res) => {
+  const url = await generateUploadURL();
+  res.send({ url });
+});
 
 // code in frontend to directly store the image
 //   const {url} = await fetch('').then(res=>res.json())
@@ -31,14 +31,39 @@ router.get('/s3Url', async(req,res)=>{
 // const imageUrl = url.split('?')[0]
 // console.log(imageUrl)
 
-
 // to get images from the backend
-// router.get("/images/:key", (req, res) => {
-//   const key = req.params.key;
-//   const readStream = getFileStream(key);
+router.get("/images/:key", (req, res) => {
+  const key = req.params.key;
+  const readStream = getFileStream(key);
 
-//   readStream.pipe(res);
-// });
+  readStream.pipe(res);
+});
+router.post("/single-image", upload.single("image"), async (req, res) => {
+  const file = req.file;
+  console.log(file);
+  const resultImage = await uploadFile(file);
+  // console.log(resultImage.Key);
+  res.send(resultImage);
+});
+router.post("/multiple-image", upload.array("images", 3), async (req, res) => {
+  // const file = req.files;
+  console.log(req.files);
+  if (req.files && req.files.length > 0) {
+    for (let i = 0; i < req.files.length; i++) {
+      const resultImage = await uploadFile(req.files[i]);
+      console.log(`Image ${i} - ${resultImage.Key}`);
+    }
+  }
+
+  // .then((result)=>{ })
+  res.json({
+    message: ` ${req.files.length} Images uploaded succefully `,
+  });
+
+  // const resultImage = await uploadFile(file);
+  // console.log(resultImage.Key);
+  // res.send(resultImage);
+});
 
 router.get(
   "/get-properties",
@@ -134,7 +159,7 @@ router.get(
   }
 );
 
-router.post("/add-properties", upload.single("images"), async (req, res) => {
+router.post("/add-properties", async (req, res) => {
   const {
     title,
     description,
@@ -148,10 +173,7 @@ router.post("/add-properties", upload.single("images"), async (req, res) => {
     amenities,
     flatOwner,
   } = req.body;
-  // const file = req.file;
-  // console.log(file);
-  // const resultImage = await uploadFile(file);
-  // console.log(resultImage.Key);
+
   const newItem = new Property({
     title,
     description,
@@ -201,7 +223,6 @@ router.get("/:shortUrl", async (req, res) => {
     return res.status(400).json({ message: error });
   }
 });
-
 
 // changing string to number
 const details1 = z.object({
