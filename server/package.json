@@ -24,6 +24,8 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "shortid": "^2.2.16",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.6.0",
     "zod": "^3.8.2-alpha.6"
   },
   "devDependencies": {

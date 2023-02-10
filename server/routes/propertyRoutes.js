@@ -11,10 +11,23 @@ const upload = multer({ dest: "uploads/" });
 
 const { uploadFile, getFileStream, generateUploadURL } = require("../s3");
 
+/**
+ * @swagger
+ * /api/property/s3Url:
+ *  get:
+ *    summary: To get pre signed url
+ *    tags: [Properties]
+ *    description: This api is used to send presigned url
+ *    responses:
+ *        200:
+ *            description: This api is used send presigned url
+ *            
+ */
+
 // generates signed url
 router.get("/s3Url", async (req, res) => {
   const url = await generateUploadURL();
-  res.send({ url });
+  res.status(200).send({ url });
 });
 
 // code in frontend to directly store the image
@@ -31,12 +44,43 @@ router.get("/s3Url", async (req, res) => {
 // const imageUrl = url.split('?')[0]
 // console.log(imageUrl)
 
+
+/**
+ * @swagger
+ * /api/property/images/{key}:
+ *  get:
+ *    summary: To get image by key
+ *    tags: [Properties]
+ *    parameters:
+ *      - in: path
+ *        name: key
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The image key
+ *    responses:
+ *        200:
+ *          description: The image desc by key
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Property'
+ *        400:
+ *          description: The image not found
+ */
+
 // to get images from the backend
 router.get("/images/:key", (req, res) => {
-  const key = req.params.key;
-  const readStream = getFileStream(key);
-
-  readStream.pipe(res);
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
+  
+    readStream.pipe(res);
+    res.status(200)
+  } catch (error) {
+    console.log(`Error : ${error}`);
+    res.status(400)
+  }
 });
 router.post("/single-image", upload.single("image"), async (req, res) => {
   const file = req.file;
@@ -45,26 +89,159 @@ router.post("/single-image", upload.single("image"), async (req, res) => {
   // console.log(resultImage.Key);
   res.send(resultImage);
 });
+
+/**
+ * @swagger
+ * /api/property/multiple-image:
+ *  post:
+ *    summary: Add multiple images to s3
+ *    tags: [Properties]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        multipart/form-data
+ *    responses:
+ *      200:
+ *        description: The images were uploaded
+ *        content:
+ *          multipart/form-data
+ *      400:
+ *        description: Image not uploaded
+ *      
+ *        
+ *      
+ */
 router.post("/multiple-image", upload.array("images", 3), async (req, res) => {
-  // const file = req.files;
-  console.log(req.files);
-  if (req.files && req.files.length > 0) {
-    for (let i = 0; i < req.files.length; i++) {
-      const resultImage = await uploadFile(req.files[i]);
-      console.log(`Image ${i} - ${resultImage.Key}`);
+
+  try {
+    
+    // const file = req.files;
+    console.log(req.files);
+    if (req.files && req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        const resultImage = await uploadFile(req.files[i]);
+        console.log(`Image ${i} - ${resultImage.Key}`);
+      }
     }
+  
+    // .then((result)=>{ })
+    res.status(200).json({
+      message: ` ${req.files.length} Images uploaded succefully `,
+    });
+  
+    // const resultImage = await uploadFile(file);
+    // console.log(resultImage.Key);
+    // res.send(resultImage);
+  } catch (error) {
+    res.status(400).json({
+      message: `Image not uploaded : ${error} `,
+    });
   }
-
-  // .then((result)=>{ })
-  res.json({
-    message: ` ${req.files.length} Images uploaded succefully `,
-  });
-
-  // const resultImage = await uploadFile(file);
-  // console.log(resultImage.Key);
-  // res.send(resultImage);
 });
 
+/**
+ * @swagger
+ * components:
+ *    schemas:
+ *      Property:
+ *        type: object
+ *        required:
+ *          - title
+ *          - description
+ *          - area
+ *          - locality
+ *          - state
+ *          - rent
+ *          - buyOrRent
+ *          - details
+ *          - amenities
+ *          - flatowner
+ *          - short
+ *        properties:
+ *                title:
+ *                    type: String
+ *                description:
+ *                     type: String
+ *                images:
+ *                     type: String
+ *                area:
+ *                     type: Number
+ *                locality:
+ *                     type: String
+ *                state:
+ *                     type: String
+ *                rent:
+ *                     type: Number
+ *                buyOrRent:
+ *                     type: String
+ *                details:
+ *                      type: Array
+ *                      items:
+ *                          bedrooms:
+ *                                  type: Number
+ *                          bathroom:
+ *                                  type: Number
+ *                          propertyType:
+ *                                  type: String
+ *                          propertyAge:
+ *                                  type: Number
+ *                          furnishing:
+ *                                  type: String
+ *                          tenants:
+ *                                  type: Number
+ *                          deposit:
+ *                                  type: Number
+ *                          foodPreferance:
+ *                                  type: String
+ *                          balcony:
+ *                                  type: Number
+ *                          flatFloor:
+ *                                  type: Number
+ *                          totalFloors:
+ *                                  type: Number
+ *                          availableFrom:
+ *                                  type: Date
+ *                          facing:
+ *                                  type: String
+ *                          monthlymaintenance:
+ *                                  type: Number
+ *                          waterSupply:
+ *                                  type: Number
+ *                amentities:
+ *                     type: Array
+ *                     items:
+ *                          type: string
+ *                flatOwner:
+ *                     type: string
+ *                short:
+ *                     type: string
+ *
+ */
+
+/**
+ * @swagger
+ * tags:
+ *    name: Properties
+ *    description: The Property managing API
+ */
+
+/**
+ * @swagger
+ * /api/property/get-properties:
+ *  get:
+ *    summary: To get all properties from mongo DB
+ *    tags: [Properties]
+ *    description: This api is used to fetchdata from mongoDB
+ *    responses:
+ *        200:
+ *            description: This api is used to fetchdata from mongoDB
+ *            content:
+ *                application/json:
+ *                  schema:
+ *                    type: array
+ *                    items:
+ *                        $ref: '#/components/schemas/Property'
+ */
 router.get(
   "/get-properties",
   // userAuth,
@@ -72,31 +249,20 @@ router.get(
   async (req, res) => {
     try {
       let query = {};
+      let details = [];
       if (req.query.buyOrRent) {
         query.buyOrRent = req.query.buyOrRent;
       }
-      // if (req.query.bathroom) {
-      //   query.details[0].bathroom == parseInt(req.query.bathroom);
-      // }
-      // if (req.query.bedrooms) {
-      //   // query.details[0].bedrooms == parseInt(req.query.bedrooms);
-      //   console.log(query.details[0].bedrooms);
-      // }
       if (req.query.keyword) {
         query.$or = [
           { title: { $regex: req.query.keyword, $options: "i" } },
           { description: { $regex: req.query.keyword, $options: "i" } },
           { locality: { $regex: req.query.keyword, $options: "i" } },
           { state: { $regex: req.query.keyword, $options: "i" } },
-          // {
-          //   "details[0].bedrooms": {
-          //     $lt: req.query.bedrooms,
-          //   },
-          // },
         ];
       }
       let properties = await Property.find(query).populate("flatOwner", "name");
-      details = [];
+
       if (Object.keys(req.query).length != 0) {
         properties.forEach((element) => {
           if (
@@ -159,6 +325,34 @@ router.get(
   }
 );
 
+
+/**
+ * @swagger
+ * /api/property/add-properties:
+ *  post:
+ *    summary: Create a new property
+ *    tags: [Properties]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Property'
+ *    responses:
+ *      200:
+ *        description: The property was created
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Property'
+ *      400:
+ *        description: Invalid input
+ *      404:
+ *        description: The property was not created
+ *        
+ *      
+ */
+
 router.post("/add-properties", async (req, res) => {
   const {
     title,
@@ -197,9 +391,33 @@ router.post("/add-properties", async (req, res) => {
     }
   } catch (error) {
     // return res.status(200).json({ result });
-    return res.status(400).json({ message: error });
+    return res.status(404).json({ message: error });
   }
 });
+
+/**
+ * @swagger
+ * /api/property/get-properties/{id}:
+ *  get:
+ *    summary: To get property by id
+ *    tags: [Properties]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The property id
+ *    responses:
+ *        200:
+ *          description: The property desc by id
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Property'
+ *        400:
+ *          description: The property not found
+ */
 
 router.get("/get-properties/:id", async (req, res, next) => {
   const id = req.params.id;
@@ -212,6 +430,31 @@ router.get("/get-properties/:id", async (req, res, next) => {
     return res.status(400).json({ message: error });
   }
 });
+
+/**
+ * @swagger
+ * /api/property/{shortUrl}:
+ *  get:
+ *    summary: To get property by short url
+ *    tags: [Properties]
+ *    parameters:
+ *      - in: path
+ *        name: shortUrl
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The property shortUrl
+ *    responses:
+ *        200:
+ *          description: The property desc by shortUrl
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Property'
+ *        400:
+ *          description: The property not found
+ */
+
 router.get("/:shortUrl", async (req, res) => {
   // console.log(req.params.shortUrl);
   try {

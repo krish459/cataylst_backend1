@@ -10,54 +10,100 @@ const { ROLES } = require("../utils/Enum");
 
 const router = require("express").Router();
 
+/**
+ * @swagger
+ * components:
+ *    schemas:
+ *      User:
+ *        type: object
+ *        required:
+ *          - name
+ *          - email
+ *          - username
+ *          - password
+ *        properties:
+ *                name:
+ *                    type: String
+ *                email:
+ *                     type: String
+ *                role:
+ *                     type: String
+ *                username:
+ *                     type: String
+ *                password:
+ *                     type: String
+ *
+ */
+
+/**
+ * @swagger
+ * tags:
+ *    name: Users
+ *    description: The User managing API
+ */
+
+/**
+ * @swagger
+ * /api/users/register:
+ *  post:
+ *    summary: Signup
+ *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *      201:
+ *        description: The User was created
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      400:
+ *        description: Invalid Input
+ *      500:
+ *        description: The User was not created
+ *
+ *
+ */
+
 //  Registration route
 router.post("/register", async (req, res) => {
   await userRegister(req.body, res);
 });
 
+/**
+ * @swagger
+ * /api/users/login:
+ *  post:
+ *    summary: Login
+ *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *      201:
+ *        description: The User was loggen in
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      400:
+ *        description: Invalid Input
+ *      500:
+ *        description: The User was not logged in
+ *
+ *
+ */
+
 // Owner Login route
 router.post("/login", async (req, res) => {
   await userLogin(req.body, ROLES.ADMIN, res);
 });
-
-// // customer Resgitration route
-// router.post("/register-customer", async (req, res) => {
-//   await userRegister(req.body, "customer", res);
-// });
-
-// // admin Registration route
-// router.post("/register-admin", async (req, res) => {
-//   await userRegister(req.body, "admin", res);
-// });
-
-// // Owner Registration route
-// router.post("/register-owner", async (req, res) => {
-//   await userRegister(req.body, "owner", res);
-// });
-
-// // broker Registration route
-// router.post("/register-broker", async (req, res) => {
-//   await userRegister(req.body, "broker", res);
-// });
-
-// // customer Login route
-// router.post("/login-customer", async (req, res) => {
-//   await userLogin(req.body, "customer", res);
-// });
-
-// // admin Login route
-// router.post("/login-admin", async (req, res) => {
-//   await userLogin(req.body, "admin", res);
-// });
-
-// // Owner Login route
-// router.post("/login-owner", async (req, res) => {
-//   await userLogin(req.body, "owner", res);
-// });
-
-// // broker Login route
-// router.post("/login-broker", async (req, res) => {
-//   await userLogin(req.body, "broker", res);
-// });
 
 module.exports = router;
