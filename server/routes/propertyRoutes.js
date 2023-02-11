@@ -16,12 +16,12 @@ const { uploadFile, getFileStream, generateUploadURL } = require("../s3");
  * /api/property/s3Url:
  *  get:
  *    summary: To get pre signed url
- *    tags: [Properties]
+ *    tags: [Images]
  *    description: This api is used to send presigned url
  *    responses:
  *        200:
  *            description: This api is used send presigned url
- *            
+ *
  */
 
 // generates signed url
@@ -44,13 +44,12 @@ router.get("/s3Url", async (req, res) => {
 // const imageUrl = url.split('?')[0]
 // console.log(imageUrl)
 
-
 /**
  * @swagger
  * /api/property/images/{key}:
  *  get:
  *    summary: To get image by key
- *    tags: [Properties]
+ *    tags: [Images]
  *    parameters:
  *      - in: path
  *        name: key
@@ -74,64 +73,72 @@ router.get("/images/:key", (req, res) => {
   try {
     const key = req.params.key;
     const readStream = getFileStream(key);
-  
+
     readStream.pipe(res);
-    res.status(200)
+    res.status(200);
   } catch (error) {
     console.log(`Error : ${error}`);
-    res.status(400)
+    res.status(400);
   }
-});
-router.post("/single-image", upload.single("image"), async (req, res) => {
-  const file = req.file;
-  console.log(file);
-  const resultImage = await uploadFile(file);
-  // console.log(resultImage.Key);
-  res.send(resultImage);
 });
 
 /**
  * @swagger
- * /api/property/multiple-image:
- *  post:
- *    summary: Add multiple images to s3
- *    tags: [Properties]
- *    requestBody:
- *      required: true
- *      content:
- *        multipart/form-data
- *    responses:
- *      200:
- *        description: The images were uploaded
- *        content:
- *          multipart/form-data
- *      400:
- *        description: Image not uploaded
- *      
- *        
- *      
+ * tags:
+ *    name: Images
+ *    description: The Images managing API
  */
-router.post("/multiple-image", upload.array("images", 3), async (req, res) => {
 
+// router.post("/single-image", upload.single("image"), async (req, res) => {
+//   try {
+//     const file = req.file;
+//     console.log(file);
+//     const resultImage = await uploadFile(file);
+//     // console.log(resultImage.Key);
+//     res.send(resultImage);
+//   } catch (error) {}
+// });
+
+/**
+ * @swagger
+ * /api/property/multiple-image:
+ *      post:
+ *        summary: Add multiple images to s3
+ *        tags: [Images]
+ *        requestBody:
+ *          content:
+ *            multipart/form-data:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  images:
+ *                    type: array
+ *                    items:
+ *                      type: string
+ *                      format: binary
+ *        responses:
+ *          200:
+ *            description: The images were uploaded
+ *          400:
+ *            description: Image not uploaded
+ */
+
+router.post("/multiple-image", upload.array("images", 3), async (req, res) => {
   try {
-    
     // const file = req.files;
-    console.log(req.files);
+    // console.log(req.files);
+    let imgkeys = []
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
         const resultImage = await uploadFile(req.files[i]);
         console.log(`Image ${i} - ${resultImage.Key}`);
+        imgkeys.push(resultImage.Key)
       }
     }
-  
-    // .then((result)=>{ })
+
     res.status(200).json({
-      message: ` ${req.files.length} Images uploaded succefully `,
+      message: ` ${req.files.length} Images uploaded succefully. imgkeys: ${imgkeys}`,
     });
-  
-    // const resultImage = await uploadFile(file);
-    // console.log(resultImage.Key);
-    // res.send(resultImage);
   } catch (error) {
     res.status(400).json({
       message: `Image not uploaded : ${error} `,
@@ -325,7 +332,6 @@ router.get(
   }
 );
 
-
 /**
  * @swagger
  * /api/property/add-properties:
@@ -349,8 +355,8 @@ router.get(
  *        description: Invalid input
  *      404:
  *        description: The property was not created
- *        
- *      
+ *
+ *
  */
 
 router.post("/add-properties", async (req, res) => {
