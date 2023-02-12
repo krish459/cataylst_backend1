@@ -9,6 +9,7 @@ const port = process.env.PORT || 8000;
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
+// https://makanmitra.dthree.in/
 
 const options = {
   definition: {
@@ -19,7 +20,8 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000/",
+        // url: "http://localhost:5000/",
+        url: "https://makanmitra.dthree.in/", 
       },
     ],
   },
@@ -36,7 +38,6 @@ app.use(passport.initialize());
 
 require("./middlewares/passport")(passport);
 
-
 /**
  * @swagger
  *  components:
@@ -46,7 +47,7 @@ require("./middlewares/passport")(passport);
  *                  properties:
  *                      title:
  *                            type: string
-*/
+ */
 
 /**
  * @swagger
@@ -57,9 +58,8 @@ require("./middlewares/passport")(passport);
  *    responses:
  *         200:
  *             description: To test Get method
-*
-*/
-
+ *
+ */
 
 app.get("/", (req, res) => {
   res.send("Server working branding ");

@@ -70,6 +70,8 @@ const userLogin = async (userCreds, role, res) => {
       success: false,
     });
   }
+  // console.log(user.role);
+  // console.log(role);
   if (user.role != role) {
     return res.status(403).json({
       message: `Please make sure you are loggging in from right portal`,
