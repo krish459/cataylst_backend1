@@ -256,23 +256,23 @@ router.get(
   async (req, res) => {
     try {
       let query = {};
-      let details = [];
-      if (req.query.buyOrRent) {
-        query.buyOrRent = req.query.buyOrRent;
-      }
-      if (req.query.keyword) {
-        query.$or = [
-          { title: { $regex: req.query.keyword, $options: "i" } },
-          { description: { $regex: req.query.keyword, $options: "i" } },
-          { locality: { $regex: req.query.keyword, $options: "i" } },
-          { state: { $regex: req.query.keyword, $options: "i" } },
-        ];
-      }
-      let properties = await Property.find(query).populate("flatOwner", "name");
-
-      if (Object.keys(req.query).length != 0) {
+        if (req.query.keyword) {
+            query.$or = [
+                { title: { $regex: req.query.keyword, $options: "i" } },
+                { description: { $regex: req.query.keyword, $options: "i" } },
+                { locality: { $regex: req.query.keyword, $options: "i" } },
+                { state: { $regex: req.query.keyword, $options: "i" } },
+              ];
+            }
+            let properties = await Property.find(query).populate("flatOwner", "name");
+            
+            let details = [];
+      if (Object.keys(req.query).length != 0 && !req.query.keyword) {
         properties.forEach((element) => {
+
           if (
+            (element.locality == req.query.locality)||
+            (element.buyOrRent == req.query.buyOrRent)||
             (parseInt(req.query.bedrooms) >= 6
               ? element.details[0].bedrooms >= parseInt(req.query.bedrooms)
               : element.details[0].bedrooms == parseInt(req.query.bedrooms)) ||
@@ -318,6 +318,7 @@ router.get(
                 parseInt(req.query.availableFromYear)
               : element.details[0].availableFrom.getFullYear().toString() ==
                 parseInt(req.query.availableFromYear))
+                
           ) {
             details.push(element);
           }
