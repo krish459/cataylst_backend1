@@ -127,12 +127,12 @@ router.post("/multiple-image", upload.array("images", 3), async (req, res) => {
   try {
     // const file = req.files;
     // console.log(req.files);
-    let imgkeys = []
+    let imgkeys = [];
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
         const resultImage = await uploadFile(req.files[i]);
         console.log(`Image ${i} - ${resultImage.Key}`);
-        imgkeys.push(resultImage.Key)
+        imgkeys.push(resultImage.Key);
       }
     }
 
@@ -256,25 +256,24 @@ router.get(
   async (req, res) => {
     try {
       let query = {};
-        if (req.query.keyword) {
-            query.$or = [
-                { title: { $regex: req.query.keyword, $options: "i" } },
-                { description: { $regex: req.query.keyword, $options: "i" } },
-                { locality: { $regex: req.query.keyword, $options: "i" } },
-                { state: { $regex: req.query.keyword, $options: "i" } },
-              ];
-            }
-            let properties = await Property.find(query).populate("flatOwner", "name");
-            
-            let details = [];
+      if (req.query.keyword) {
+        query.$or = [
+          { title: { $regex: req.query.keyword, $options: "i" } },
+          { description: { $regex: req.query.keyword, $options: "i" } },
+          { locality: { $regex: req.query.keyword, $options: "i" } },
+          { state: { $regex: req.query.keyword, $options: "i" } },
+        ];
+      }
+      let properties = await Property.find(query).populate("flatOwner", "name");
+
+      let details = [];
       if (Object.keys(req.query).length != 0 && !req.query.keyword) {
         properties.forEach((element) => {
-
           if (
-            (element.locality == req.query.locality)||
-            (element.buyOrRent == req.query.buyOrRent)||
-            (element.area >= parseInt(req.query.minarea) )||
-            (element.rent >= parseInt(req.query.price) )||
+            element.locality == req.query.locality ||
+            element.buyOrRent == req.query.buyOrRent ||
+            element.area >= parseInt(req.query.minarea) ||
+            element.rent >= parseInt(req.query.price) ||
             (parseInt(req.query.bedrooms) >= 6
               ? element.details[0].bedrooms >= parseInt(req.query.bedrooms)
               : element.details[0].bedrooms == parseInt(req.query.bedrooms)) ||
@@ -321,15 +320,19 @@ router.get(
                 parseInt(req.query.availableFromYear)
               : element.details[0].availableFrom.getFullYear().toString() ==
                 parseInt(req.query.availableFromYear))
-                
           ) {
             details.push(element);
           }
         });
-        res.status(200).json({ details });
-      } else {
-        res.status(200).json({ properties });
       }
+      if (details.length == 0) {
+        res.status(200).json({ properties });
+      } else {
+        res.status(200).json({ details });
+      }
+      // } else {
+      //   res.status(200).json({ properties });
+      // }
     } catch (error) {
       return res.status(400).json({ message: `${error}` });
     }
