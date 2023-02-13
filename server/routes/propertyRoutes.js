@@ -274,6 +274,7 @@ router.get(
             (element.locality == req.query.locality)||
             (element.buyOrRent == req.query.buyOrRent)||
             (element.area >= parseInt(req.query.minarea) )||
+            (element.rent >= parseInt(req.query.price) )||
             (parseInt(req.query.bedrooms) >= 6
               ? element.details[0].bedrooms >= parseInt(req.query.bedrooms)
               : element.details[0].bedrooms == parseInt(req.query.bedrooms)) ||
