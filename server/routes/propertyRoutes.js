@@ -285,6 +285,7 @@ router.get(
               : element.details[0].propertyAge ==
                 parseInt(req.query.propertyAge)) ||
             element.details[0].furnishing == req.query.furnishing ||
+            element.details[0].propertyType == req.query.propertyType ||
             (parseInt(req.query.tenants) >= 3
               ? element.details[0].tenants >= parseInt(req.query.tenants)
               : element.details[0].tenants == parseInt(req.query.tenants)) ||
