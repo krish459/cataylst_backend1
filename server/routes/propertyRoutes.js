@@ -270,7 +270,7 @@ router.get(
       const {page,perPage}= req.query;
       const options = {
         page: parseInt(page,10) || 1,
-        limit: parseInt(perPage,10) || 2,
+        limit: parseInt(perPage,10) || 6,
       }
       let properties = await Property.paginate({},options)
 
