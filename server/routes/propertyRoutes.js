@@ -265,11 +265,18 @@ router.get(
           { state: { $regex: req.query.keyword, $options: "i" } },
         ];
       }
-      let properties = await Property.find(query).populate("flatOwner", "name");
+      // let properties = await Property.find(query).populate("flatOwner", "name");
+      
+      const {page,perPage}= req.query;
+      const options = {
+        page: parseInt(page,10) || 1,
+        limit: parseInt(perPage,10) || 2,
+      }
+      let properties = await Property.paginate({},options)
 
       let details = [];
       if (Object.keys(req.query).length != 0) {
-        properties.forEach((element) => {
+        properties.docs.forEach((element) => {
           if (
             element.locality == req.query.locality ||
             element.buyOrRent == req.query.buyOrRent ||

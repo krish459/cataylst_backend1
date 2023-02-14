@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const shortId = require("shortid");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const Schema = mongoose.Schema;
 
@@ -77,6 +78,8 @@ let propertySchema = new Schema(
     timestamps: true,
   }
 );
+
+propertySchema.plugin(mongoosePaginate);
 
 mongoose.models = {};
 
