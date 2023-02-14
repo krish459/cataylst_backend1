@@ -137,7 +137,8 @@ router.post("/multiple-image", upload.array("images", 3), async (req, res) => {
     }
 
     res.status(200).json({
-      message: ` ${req.files.length} Images uploaded succefully. imgkeys: ${imgkeys}`,
+      // message: ` ${req.files.length} Images uploaded succefully. imgkeys: ${imgkeys}`,
+      imgkeys,
     });
   } catch (error) {
     res.status(400).json({
@@ -267,7 +268,7 @@ router.get(
       let properties = await Property.find(query).populate("flatOwner", "name");
 
       let details = [];
-      if (Object.keys(req.query).length != 0 ) {
+      if (Object.keys(req.query).length != 0) {
         properties.forEach((element) => {
           if (
             element.locality == req.query.locality ||
