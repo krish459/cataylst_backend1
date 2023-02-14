@@ -267,7 +267,7 @@ router.get(
       let properties = await Property.find(query).populate("flatOwner", "name");
 
       let details = [];
-      if (Object.keys(req.query).length != 0 && !req.query.keyword) {
+      if (Object.keys(req.query).length != 0 ) {
         properties.forEach((element) => {
           if (
             element.locality == req.query.locality ||

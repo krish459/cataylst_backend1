@@ -13,10 +13,11 @@ let propertySchema = new Schema(
       type: String,
       required: true,
     },
-    images: {
-      type: String,
-      //   required: true,
-    },
+    images: [
+      {
+        type: String,
+      },
+    ],
     area: {
       type: Number,
       required: true,

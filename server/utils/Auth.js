@@ -43,7 +43,8 @@ const userRegister = async (userDets, res) => {
         success: true,
       });
     } else {
-      return res.status(400).json({ message: "Invalid Input" });
+      return res.status(400).json({ message: "Invalid Input" ,
+      success: false,});
     }
   } catch (error) {
     return res.status(500).json({
