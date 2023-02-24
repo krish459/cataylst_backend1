@@ -9,7 +9,7 @@ const { saveData } = require("./Zodcheck");
 
 // Desc to register the user (customer,admin,broker,owner)
 
-const userRegister = async (userDets, res) => {
+const userRegister = async (userDets,role, res) => {
   try {
     // validate the user
     let usernameNotTaken = await validateUsername(userDets.username);
@@ -33,6 +33,7 @@ const userRegister = async (userDets, res) => {
     const newUser = new User({
       ...userDets,
       password: hashedPassword,
+      role: role,
     });
 
     const result1 = await saveData(checkDataUser, userDets);

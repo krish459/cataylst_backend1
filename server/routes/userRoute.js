@@ -71,7 +71,7 @@ const router = require("express").Router();
 
 //  Registration route
 router.post("/register", async (req, res) => {
-  await userRegister(req.body, res);
+  await userRegister(req.body,ROLES.CUSTOMER, res);
 });
 
 /**
@@ -104,6 +104,74 @@ router.post("/register", async (req, res) => {
 // Owner Login route
 router.post("/login", async (req, res) => {
   await userLogin(req.body, ROLES.CUSTOMER, res);
+});
+
+
+// broker registration 
+/**
+ * @swagger
+ * /api/users/register-broker:
+ *  post:
+ *    summary: Signup for Brokers
+ *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *      201:
+ *        description: The Broker was created
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      400:
+ *        description: Invalid Input
+ *      500:
+ *        description: The Broker was not created
+ *
+ *
+ */
+
+//  Registration route Brokers
+router.post("/register-broker", async (req, res) => {
+  await userRegister(req.body,ROLES.BROKER, res);
+});
+
+
+
+/**
+ * @swagger
+ * /api/users/login-broker:
+ *  post:
+ *    summary: Login for brokers
+ *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *      201:
+ *        description: The User Broker was loggen in
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      400:
+ *        description: Invalid Input
+ *      500:
+ *        description: The User Broker was not logged in
+ *
+ *
+ */
+
+// Owner Login route
+router.post("/login-broker", async (req, res) => {
+  await userLogin(req.body, ROLES.BROKER, res);
 });
 
 module.exports = router;
