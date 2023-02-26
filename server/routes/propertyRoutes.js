@@ -490,7 +490,7 @@ router.get("/:shortUrl", async (req, res) => {
 
 /**
  * @swagger
- * /broker-properties/{id}:
+ * /api/property/broker-properties/{id}:
  *  get:
  *    summary: To get broker properties
  *    tags: [broker]
