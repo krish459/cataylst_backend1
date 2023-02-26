@@ -266,13 +266,13 @@ router.get(
         ];
       }
       // let properties = await Property.find(query).populate("flatOwner", "name");
-      
-      const {page,perPage}= req.query;
+
+      const { page, perPage } = req.query;
       const options = {
-        page: parseInt(page,10) || 1,
-        limit: parseInt(perPage,10) || 2,
-      }
-      let properties = await Property.paginate({},options)
+        page: parseInt(page, 10) || 1,
+        limit: parseInt(perPage, 10) || 2,
+      };
+      let properties = await Property.paginate({}, options);
 
       let details = [];
       if (Object.keys(req.query).length != 0) {
@@ -488,16 +488,15 @@ router.get("/:shortUrl", async (req, res) => {
   }
 });
 
-
 /**
  * @swagger
  * /broker-properties/{id}:
  *  get:
- *    summary: To get broker properties 
+ *    summary: To get broker properties
  *    tags: [broker]
  *    parameters:
  *      - in: path
- *        name: id
+ *        name: flatOwner
  *        schema:
  *          type: string
  *        required: true
@@ -516,7 +515,7 @@ router.get("/:shortUrl", async (req, res) => {
 router.get("/broker-properties/:id", async (req, res, next) => {
   const id = req.params.id;
   try {
-    const product = await Property.find({flatOwner: id});
+    const product = await Property.find({ flatOwner: id });
     res.status(200).json({ product });
   } catch (error) {
     return res.status(400).json({ message: error });
