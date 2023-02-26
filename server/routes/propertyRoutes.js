@@ -490,7 +490,7 @@ router.get("/:shortUrl", async (req, res) => {
 
 /**
  * @swagger
- * /api/property/broker-properties/{id}:
+ * /api/property/broker-properties/{flatOwner}:
  *  get:
  *    summary: To get broker properties
  *    tags: [broker]
@@ -512,10 +512,9 @@ router.get("/:shortUrl", async (req, res) => {
  *          description: The property not found
  */
 
-router.get("/broker-properties/:id", async (req, res, next) => {
-  const id = req.params.id;
+router.get("/broker-properties/:flatOwner", async (req, res, next) => {
   try {
-    const product = await Property.find({ flatOwner: id });
+    const product = await Property.find({ flatOwner: req.params.flatOwner });
     res.status(200).json({ product });
   } catch (error) {
     return res.status(400).json({ message: error });
