@@ -488,6 +488,41 @@ router.get("/:shortUrl", async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /broker-properties/{id}:
+ *  get:
+ *    summary: To get broker properties 
+ *    tags: [broker]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The broker id
+ *    responses:
+ *        200:
+ *          description: The property desc by broker id
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Property'
+ *        400:
+ *          description: The property not found
+ */
+
+router.get("/broker-properties/:id", async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const product = await Property.find({flatOwner: id});
+    res.status(200).json({ product });
+  } catch (error) {
+    return res.status(400).json({ message: error });
+  }
+});
+
 // changing string to number
 const details1 = z.object({
   bedrooms: z.number(),

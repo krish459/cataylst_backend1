@@ -113,7 +113,7 @@ router.post("/login", async (req, res) => {
  * /api/users/register-broker:
  *  post:
  *    summary: Signup for Brokers
- *    tags: [Users]
+ *    tags: [broker]
  *    requestBody:
  *      required: true
  *      content:
@@ -147,7 +147,7 @@ router.post("/register-broker", async (req, res) => {
  * /api/users/login-broker:
  *  post:
  *    summary: Login for brokers
- *    tags: [Users]
+ *    tags: [broker]
  *    requestBody:
  *      required: true
  *      content:
