@@ -488,6 +488,7 @@ router.get("/:shortUrl", async (req, res) => {
   }
 });
 
+
 /**
  * @swagger
  * /api/property/broker-properties/{flatOwner}:
@@ -511,6 +512,7 @@ router.get("/:shortUrl", async (req, res) => {
  *        400:
  *          description: The property not found
  */
+
 
 router.get("/broker-properties/:flatOwner", async (req, res, next) => {
   try {
