@@ -14,10 +14,10 @@ function buildFilter(query) {
   if (query.buyOrRent) {
     filter.buyOrRent = query.buyOrRent;
   }
-  if (query.minarea) {
+  if (query.minarea && !isNaN(parseInt(query.minarea))) {
     filter.area = { $gte: parseInt(query.minarea) };
   }
-  if (query.price) {
+  if (query.price && !isNaN(parseInt(query.price))) {
     filter.rent = { $gte: parseInt(query.price) };
   }
   if (query.bedrooms && !isNaN(parseInt(query.bedrooms))) {
