@@ -1,6 +1,6 @@
 function buildFilter(query) {
   const filter = {};
-  if (query.keyword) {
+  if (query.keyword && !isNaN(parseInt(query.keyword))) {
     filter.$or = [
       { title: { $regex: query.keyword, $options: "i" } },
       { description: { $regex: query.keyword, $options: "i" } },
@@ -8,10 +8,10 @@ function buildFilter(query) {
       { state: { $regex: query.keyword, $options: "i" } },
     ];
   }
-  if (query.locality) {
+  if (query.locality && !isNaN(parseInt(query.locality))) {
     filter.locality = query.locality;
   }
-  if (query.buyOrRent) {
+  if (query.buyOrRent && !isNaN(parseInt(query.buyOrRent))) {
     filter.buyOrRent = query.buyOrRent;
   }
   if (query.minarea && !isNaN(parseInt(query.minarea))) {
@@ -38,17 +38,17 @@ function buildFilter(query) {
       filter["details.bathroom"] = parseInt(query.bathroom);
     }
   }
-  if (query.propertyAge) {
+  if (query.propertyAge && !isNaN(parseInt(query.propertyAge))) {
     if (parseInt(query.propertyAge) >= 3) {
         filter["details.propertyAge"] = { $gte: parseInt(query.propertyAge) };
       } else {
         filter["details.propertyAge"] = parseInt(query.propertyAge);
       }
   }
-  if (query.furnishing) {
+  if (query.furnishing && !isNaN(parseInt(query.furnishing))) {
     filter["details.furnishing"] = query.furnishing;
   }
-  if (query.propertyType) {
+  if (query.propertyType && !isNaN(parseInt(query.propertyType))) {
     filter["details.propertyType"] = query.propertyType;
   }
   //   if (query.tenants) {
@@ -63,17 +63,17 @@ function buildFilter(query) {
   //       $gte: 10000 ? { $gte: parseInt(query.deposit) } : null,
   //     };
   //   }
-  if (query.foodPreferance) {
+  if (query.foodPreferance && !isNaN(parseInt(query.foodPreferance))) {
     filter["details.foodPreferance"] = query.foodPreferance;
   }
-  if (query.flatFloor) {
+  if (query.flatFloor && !isNaN(parseInt(query.flatFloor))) {
     if (parseInt(query.flatFloor) >= 3) {
         filter["details.flatFloor"] = { $gte: parseInt(query.flatFloor) };
       } else {
         filter["details.flatFloor"] = parseInt(query.flatFloor);
       }
   }
-  if (query.totalFloors) {
+  if (query.totalFloors && !isNaN(parseInt(query.totalFloors))) {
     if (parseInt(query.totalFloors) >= 3) {
         filter["details.totalFloors"] = { $gte: parseInt(query.totalFloors) };
       } else {
