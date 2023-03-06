@@ -268,6 +268,7 @@ router.get(
       };
 
       const filter = buildFilter(req.query);
+      console.log("filter: ",filter);
       const properties = await Property.paginate(filter, options);
       res.status(200).json({ properties });
       

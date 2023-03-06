@@ -1,6 +1,6 @@
 function buildFilter(query) {
   const filter = {};
-  if (query.keyword && !isNaN(parseInt(query.keyword))) {
+  if (query.keyword && query.keyword !== undefined) {
     filter.$or = [
       { title: { $regex: query.keyword, $options: "i" } },
       { description: { $regex: query.keyword, $options: "i" } },
@@ -8,10 +8,10 @@ function buildFilter(query) {
       { state: { $regex: query.keyword, $options: "i" } },
     ];
   }
-  if (query.locality && !isNaN(parseInt(query.locality))) {
+  if (query.locality && query.locality !== undefined) {
     filter.locality = query.locality;
   }
-  if (query.buyOrRent && !isNaN(parseInt(query.buyOrRent))) {
+  if (query.buyOrRent && query.buyOrRent !== undefined) {
     filter.buyOrRent = query.buyOrRent;
   }
   if (query.minarea && !isNaN(parseInt(query.minarea))) {
@@ -45,10 +45,10 @@ function buildFilter(query) {
         filter["details.propertyAge"] = parseInt(query.propertyAge);
       }
   }
-  if (query.furnishing && !isNaN(parseInt(query.furnishing))) {
+  if (query.furnishing && query.furnishing !== undefined) {
     filter["details.furnishing"] = query.furnishing;
   }
-  if (query.propertyType && !isNaN(parseInt(query.propertyType))) {
+  if (query.propertyType && query.propertyType !== undefined) {
     filter["details.propertyType"] = query.propertyType;
   }
   //   if (query.tenants) {
@@ -63,7 +63,7 @@ function buildFilter(query) {
   //       $gte: 10000 ? { $gte: parseInt(query.deposit) } : null,
   //     };
   //   }
-  if (query.foodPreferance && !isNaN(parseInt(query.foodPreferance))) {
+  if (query.foodPreferance && query.foodPreferance !== undefined) {
     filter["details.foodPreferance"] = query.foodPreferance;
   }
   if (query.flatFloor && !isNaN(parseInt(query.flatFloor))) {
