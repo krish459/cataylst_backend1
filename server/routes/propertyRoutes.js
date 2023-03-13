@@ -335,13 +335,17 @@ router.post("/add-properties", async (req, res) => {
     flatOwner,
   });
   try {
-    const result = await saveData(User1, req.body);
-    if (result.success) {
+    
       newItem.save();
       res.send(`Item added successfully : ${newItem}`);
-    } else {
-      return res.status(400).json({ message: "Invalid Input" });
-    }
+    
+    // const result = await saveData(User1, req.body);
+    // if (result.success) {
+    //   newItem.save();
+    //   res.send(`Item added successfully : ${newItem}`);
+    // } else {
+    //   return res.status(400).json({ message: "Invalid Input" });
+    // }
   } catch (error) {
     // return res.status(200).json({ result });
     return res.status(404).json({ message: error });
