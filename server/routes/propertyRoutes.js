@@ -336,7 +336,7 @@ router.post("/add-properties", async (req, res) => {
   });
   try {
     
-      newItem.save();
+      await newItem.save();
       res.send(`Item added successfully : ${newItem}`);
     
     // const result = await saveData(User1, req.body);
