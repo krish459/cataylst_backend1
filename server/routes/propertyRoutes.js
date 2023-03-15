@@ -395,7 +395,7 @@ router.get("/get-properties/:id", async (req, res, next) => {
 /**
  * @swagger
  * /api/property/delete-property/{id}:
- *  get:
+ *  delete:
  *    summary: To delete property by id
  *    tags: [Properties]
  *    parameters:
