@@ -376,6 +376,9 @@ router.post("/add-properties", async (req, res) => {
  *          description: The property not found
  */
 
+
+
+
 router.get("/get-properties/:id", async (req, res, next) => {
   const id = req.params.id;
   try {
@@ -383,6 +386,48 @@ router.get("/get-properties/:id", async (req, res, next) => {
     // const product = await Property.findOne({ _id: id });
 
     res.status(200).json({ product });
+  } catch (error) {
+    return res.status(400).json({ message: error });
+  }
+});
+
+
+/**
+ * @swagger
+ * /api/property/delete-property/{id}:
+ *  get:
+ *    summary: To delete property by id
+ *    tags: [Properties]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The property id
+ *    responses:
+ *        200:
+ *          description: Property deleted successfully
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Property'
+ *        404:
+ *          description: The property not found
+ *        400:
+ *          description: The property not deleted
+ */
+
+router.delete("/delete-property/:id", async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const deletedProperty = await Property.findByIdAndDelete(id);
+
+    if (!deletedProperty) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    res.status(200).json({ message: "Property deleted successfully" });
   } catch (error) {
     return res.status(400).json({ message: error });
   }
