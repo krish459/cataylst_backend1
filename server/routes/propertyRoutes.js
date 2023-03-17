@@ -379,11 +379,19 @@ router.post("/add-properties", async (req, res) => {
 
 
 
-router.get("/get-properties/:id", async (req, res, next) => {
+router.get("/get-properties/:id",userAuth, async (req, res, next) => {
   const id = req.params.id;
+  const userId = req.user._id;
   try {
     const product = await Property.findById(id);
     // const product = await Property.findOne({ _id: id });
+
+    // Update the view attribute by adding 1 to it
+    product.view = product.view + 1;
+    if (!product.viewedBy.includes(userId)) {
+      product.viewedBy.push(userId);
+    }
+    await product.save();
 
     res.status(200).json({ product });
   } catch (error) {

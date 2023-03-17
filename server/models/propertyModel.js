@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const shortId = require("shortid");
-const mongoosePaginate = require('mongoose-paginate-v2');
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Schema = mongoose.Schema;
 
@@ -40,7 +40,6 @@ let propertySchema = new Schema(
       required: true,
     },
     details: [
-  
       {
         bedrooms: Number,
         bathroom: Number,
@@ -73,6 +72,16 @@ let propertySchema = new Schema(
       required: true,
       default: shortId.generate,
     },
+    view: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    viewedBy: [
+      {
+        type: String,
+      },
+    ],
   },
   {
     timestamps: true,
