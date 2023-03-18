@@ -68,6 +68,7 @@ app.get("/", (req, res) => {
 // user router middleware
 app.use("/api/users", require("./routes/userRoute"));
 app.use("/api/property", require("./routes/propertyRoutes"));
+app.use("/api/blog", require("./routes/blogRoutes"));
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
