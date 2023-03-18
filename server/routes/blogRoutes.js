@@ -5,20 +5,22 @@ const router = express.Router();
 /**
  * @swagger
  * components:
- *    schemas:
- *      Blog:
- *        type: object
- *        required:
- *          - postMeta
- *          - title
- *          - postDescriptions
- *        properties:
- *                postMeta:
- *                    type: String
- *                title:
- *                     type: String
- *                postDescriptions:
- *                     type: String
+ *   schemas:
+ *     NewBlog:
+ *       type: object
+ *       properties:
+ *         img:
+ *           type: string
+ *         postMeta:
+ *           type: string
+ *         title:
+ *           type: string
+ *         postDescriptions:
+ *           type: string
+ *       required:
+ *         - postMeta
+ *         - title
+ *         - postDescriptions
  */
 
 /**
@@ -56,7 +58,7 @@ router.get(
           page: parseInt(page, 10) || 1,
           limit: parseInt(perPage, 10) || 3,
         };
-  
+        
         const blogs = await Blog.paginate({},options);
         res.status(200).json({ blogs });
         
@@ -67,4 +69,56 @@ router.get(
     }
   );
 
+
+
+/**
+ * @swagger
+ * /api/blog/create-blog:
+ *   post:
+ *     summary: Create a new blog post in MongoDB
+ *     tags: [blogs]
+ *     description: Creates a new blog post in MongoDB using the provided data.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewBlog'
+ *     responses:
+ *       201:
+ *         description: The new blog post was successfully created in MongoDB.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       400:
+ *         description: The request data was invalid or incomplete.
+ */
+
+  router.post(
+    "/create-blog",
+    async (req, res) => {
+      try {
+        const { img, postMeta, title, postDescriptions } = req.body;
+  
+        if (!postMeta || !title || !postDescriptions) {
+          return res.status(400).json({ message: "Post meta, title, and descriptions are required." });
+        }
+  
+        const newBlog = new Blog({
+          img,
+          postMeta,
+          title,
+          postDescriptions,
+        });
+  
+        const savedBlog = await newBlog.save();
+  
+        res.status(201).json({ blog: savedBlog });
+  
+      } catch (error) {
+        return res.status(400).json({ message: `${error}` });
+      }
+    }
+  );
 module.exports = router;
