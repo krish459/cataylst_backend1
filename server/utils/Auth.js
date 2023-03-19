@@ -62,7 +62,7 @@ const checkDataUser = z.object({
   // role: z.enum([ROLES.CUSTOMER, ROLES.ADMIN, ROLES.BROKER, ROLES.CUSTOMER]),
 });
 
-const userLogin = async (userCreds, role, res) => {
+const userLogin = async (userCreds, roles, res) => {
   let { username, password } = userCreds;
   // first check if username is in the database
   const user = await User.findOne({ username });
@@ -74,7 +74,7 @@ const userLogin = async (userCreds, role, res) => {
   }
   // console.log(user.role);
   // console.log(role);
-  if (user.role != role) {
+  if (!roles.includes(user.role)) {
     return res.status(403).json({
       message: `Please make sure you are loggging in from right portal`,
       success: false,

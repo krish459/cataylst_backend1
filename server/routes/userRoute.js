@@ -103,7 +103,7 @@ router.post("/register", async (req, res) => {
 
 // Owner Login route
 router.post("/login", async (req, res) => {
-  await userLogin(req.body, ROLES.CUSTOMER, res);
+  await userLogin(req.body, [ROLES.CUSTOMER,ROLES.ADMIN], res);
 });
 
 
