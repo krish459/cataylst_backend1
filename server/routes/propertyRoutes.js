@@ -378,6 +378,86 @@ router.post("/add-properties", async (req, res) => {
 
 
 
+/**
+ * @swagger
+ * /api/property/update-property/{id}:
+ *  put:
+ *    summary: Update a property by id
+ *    tags: [Properties]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: The property id
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Property'
+ *    responses:
+ *      200:
+ *        description: The property was updated successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Property'
+ *      400:
+ *        description: Invalid input
+ *      404:
+ *        description: The property was not found
+ *
+ *
+ */
+
+router.put("/update-property/:id", async (req, res) => {
+  const {
+    title,
+    description,
+    images,
+    area,
+    locality,
+    state,
+    rent,
+    buyOrRent,
+    details,
+    amenities,
+    flatOwner,
+  } = req.body;
+
+  try {
+    const updatedItem = await Property.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        images,
+        area,
+        locality,
+        state,
+        rent,
+        buyOrRent,
+        details,
+        amenities,
+        flatOwner,
+      },
+      { new: true }
+    );
+    if (updatedItem) {
+      res.status(200).json({ updatedItem });
+    } else {
+      return res.status(404).json({ message: "The property was not found" });
+    }
+  } catch (error) {
+    return res.status(400).json({ message: error });
+  }
+});
+
+
+
+
 
 router.get("/get-properties/:id",userAuth, async (req, res, next) => {
   const id = req.params.id;
